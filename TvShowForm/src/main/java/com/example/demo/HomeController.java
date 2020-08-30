@@ -20,7 +20,7 @@ public class HomeController {
     @PostMapping("/tvshowform")
     public String processTvForm(@Valid TvShow tvshow, BindingResult result) {
         if ( result.hasErrors() ) {
-            return "tvshowform"
+            return "tvshowform";
         }
         return "tvshowconfirm";
     }
