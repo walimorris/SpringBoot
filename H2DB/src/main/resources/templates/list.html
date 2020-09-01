@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Person List</title>
+</head>
+<body>
+<h1>Person Form</h1>
+<a href="/add">Add a Person</a><br/>
+<div th:each="person : ${persons}">
+    <h4 th:inline="text">[[${person.firstName}]] [[${person.lastName}]]</h4>
+</div>
+</body>
+</html>

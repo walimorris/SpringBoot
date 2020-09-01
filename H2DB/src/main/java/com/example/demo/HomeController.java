@@ -18,7 +18,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String listPeople(Model model) {
-        model.addAttribute(personRepository.findAll());
+        model.addAttribute("persons", personRepository.findAll());
         return "list";
     }
 
@@ -33,6 +33,7 @@ public class HomeController {
         if ( result.hasErrors() ) {
             return "personform";
         }
+        personRepository.save(person); 
         return "redirect:/";
     }
 
