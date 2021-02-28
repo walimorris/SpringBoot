@@ -24,6 +24,105 @@ public class DemoApplication {
 }
 
 @Entity
+class Person {
+
+	@Id
+	private String id;
+	private String firstname;
+	private String lastname;
+	private int age;
+
+	public Person() { }
+
+	public Person(String id, String firstname, String lastname, int age) {
+		this.id = id;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.age = age;
+	}
+
+	public Person(String firstname, String lastname, int age) {
+		this(UUID.randomUUID().toString(), firstname, lastname, age);
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public String getFirstname() {
+		return this.firstname;
+	}
+
+	public String getLastname() {
+		return this.lastname;
+	}
+
+	public int getAge() {
+		return this.age;
+	}
+}
+
+@RestController
+@RequestMapping("/person")
+class RestControllerPersonApi {
+	private final DemoPersonRepository demoPersonRespository;
+
+	@Autowired
+	public RestControllerPersonApi(DemoPersonRepository demoPersonRespository) {
+		this.demoPersonRespository = demoPersonRespository;
+		this.demoPersonRespository.saveAll(List.of(
+				new Person("Wali", "Morris", 30),
+				new Person("Conner", "McGregor", 32),
+				new Person("Neil", "Tyson", 62),
+				new Person("Linus", "Torvalds", 51)
+		));
+	}
+
+	@GetMapping
+	Iterable<Person> getPeople() {
+		return demoPersonRespository.findAll();
+	}
+
+	@GetMapping("/{id}")
+	Optional<Person> getPerson(@PathVariable String id) {
+		return demoPersonRespository.findById(id);
+	}
+
+	@PostMapping()
+	ResponseEntity<Person> postPerson(@RequestBody Person person) {
+		return new ResponseEntity<>(demoPersonRespository.save(person), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	void deleteByPerson(@PathVariable String id) {
+		demoPersonRespository.deleteById(id);
+	}
+
+	@PutMapping("/{id}")
+	ResponseEntity<Person> putById(@PathVariable String id, @RequestBody Person person) {
+		return demoPersonRespository.findById(id).isPresent() ?
+				new ResponseEntity<>(demoPersonRespository.save(person), HttpStatus.CREATED) :
+				new ResponseEntity<>(demoPersonRespository.save(person), HttpStatus.OK);
+	}
+}
+
+@Entity
 class Coffee {
 
 	@Id
