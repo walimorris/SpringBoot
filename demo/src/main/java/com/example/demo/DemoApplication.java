@@ -24,6 +24,99 @@ public class DemoApplication {
 }
 
 @Entity
+class Car {
+
+	@Id
+	private String id;
+	private String make;
+	private String model;
+	private double price;
+
+	public Car() {
+	}
+
+	public Car(String id, String make, String model, double price) {
+		this.id = id;
+		this.model = model;
+		this.make = make;
+		this.price = price;
+	}
+
+	public Car(String model, String make, double id) {
+		this(UUID.randomUUID().toString(), model, make, id);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getMake() {
+		return make;
+	}
+
+	public void setMake(String make) {
+		this.make = make;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+}
+
+@RestController
+@RequestMapping("/car")
+class RestControllerCarApi {
+	private final DemoCarRepository demoCarRepository;
+
+	@Autowired
+	public RestControllerCarApi(DemoCarRepository demoCarRepository) {
+		this.demoCarRepository = demoCarRepository;
+		this.demoCarRepository.saveAll(List.of(
+				new Car("Audi", "s4", 25000),
+				new Car("BMW", "M5", 30000),
+				new Car("Subaru", "Forester",35000),
+				new Car("Camaro", "Chevrolet", 15000)
+		));
+	}
+
+	@GetMapping
+	Iterable<Car> getCar() {
+		return demoCarRepository.findAll();
+	}
+
+	@GetMapping("/{id}")
+	Optional<Car> getCarById(@PathVariable String id) {
+		return demoCarRepository.findById(id);
+	}
+
+	@PostMapping
+	ResponseEntity<Car> postCar(@RequestBody Car car) {
+		return new ResponseEntity<>(demoCarRepository.save(car), HttpStatus.CREATED);
+	}
+
+	@DeleteMapping("/{id}")
+	void deleteById(@PathVariable String id) {
+		demoCarRepository.deleteById(id);
+	}
+}
+
+@Entity
 class Person {
 
 	@Id
